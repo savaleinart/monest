@@ -1,28 +1,65 @@
 <script setup lang="ts">
 
 const fiches = ref([])
+const legendeChips: Ref<string[]> = ref([])
+const descriptionChips: Ref<string[]> = ref([])
 
 async function fetchData() {
   fiches.value = await fetch('http://localhost:3001/currencies').then(result => result.json())
 }
 
+//Une recherche / Identification de monnaie se fait sur les points suivants = 
+//Attribution / Localité / Légende Avers / Description Avers / Légende Revers / Description Revers / Réf. Ouvrage / Observation
 
+function addLegChip() {
+  legendeChips.value.push(legendeChips.value[0])
+  legendeChips.value[0] = ""
+}
+
+function addDescChip() {
+  descriptionChips.value.push(descriptionChips.value[0])
+  descriptionChips.value[0] = ""
+}
+
+function resetForm() {
+  legendeChips.value = []
+  descriptionChips.value = []
+}
 </script>
 
 <template>
   <div id="search-form" class="card">
     <div class="card form-container">
-      <label class="one" for="genre">Genre:</label>
-      <InputText class="one" id="genre" />
-      <label class="two" for="type">Type:</label>
-      <InputText class="two" id="type" />
-      <label for="vf">Valeur faciale:</label>
-      <InputText id="vf" />
+
+      <label for="attribution">Attribution:</label>
+      <InputText id="attribution" />
+
       <label for="localite">Localité:</label>
       <InputText id="localite" />
-      <div class="card button-panel">
+
+      <label for="legende">Légende:</label>
+      <div>
+        <InputText id="legende" v-model="legendeChips[0]" @keyup.enter="addLegChip" />
+        <Chip v-show="i != 0" v-for="(txt, i) in legendeChips" :key="i" :label="txt" removable />
+      </div>
+
+      <label for="ref">Réf. Ouvrage:</label>
+      <InputText id="ref" />
+
+      <label for="description">Description:</label>
+      <div>
+        <InputText id="description" v-model="descriptionChips[0]" @keyup.enter="addDescChip" />
+        <Chip v-show="i != 0" v-for="(txt, i) in descriptionChips" :key="i" :label="txt" removable />
+      </div>
+
+
+      <label for="observation">Observation:</label>
+      <InputText id="observation" />
+
+
+      <div class="card button-panel four">
         <Button style="grid-column: 2" @click="fetchData" label="Rechercher" icon="pi pi-search" />
-        <Button style="grid-column: 3" class="btn-red" label="Réinitialiser" icon="pi pi-times" />
+        <Button style="grid-column: 3" @click="resetForm" severity="danger" label="Réinitialiser" icon="pi pi-times" />
       </div>
     </div>
 
@@ -31,11 +68,15 @@ async function fetchData() {
   <div class="card">
     <DataTable :value="fiches" stripedRows paginator :rows="10" :rowsPerPageOptions="[10, 25, 50, 100]" size="small">
       <Column field="id" header="ID" sortable></Column>
-      <Column field="genre" header="Genre" sortable></Column>
-      <Column field="type" header="Type" sortable></Column>
-      <Column field="valeurFaciale" header="Valeur Faciale" sortable></Column>
-      <Column field="localite" header="Localité" sortable></Column>
       <Column field="attribution" header="Attribution" sortable></Column>
+      <Column field="localite" header="Localité" sortable></Column>
+      <Column field="legendeA" header="Légende avers" sortable></Column>
+      <Column field="descriptionA" header="Description avers" sortable></Column>
+      <Column field="legendeR" header="Légende revers" sortable></Column>
+      <Column field="descriptionR" header="Description revers" sortable></Column>
+      <Column field="ref" header="Réf. Ouvrage" sortable></Column>
+      <Column field="observation" header="Observation" sortable></Column>
+
     </DataTable>
   </div>
 </template>
@@ -54,28 +95,20 @@ Button {
 }
 
 label {
-  text-align: right;
+  text-align: left;
   padding-top: 6px;
   margin-right: 4px;
-}
-
-.btn-red {
-  background: var(--red-400);
-  border-color: var(--red-700);
-}
-
-.btn-red:hover {
-  background: var(--red-500);
-  border-color: var(--red-700);
+  margin-left: 12px;
 }
 
 .form-container {
   max-width: 70%;
   display: grid;
-  justify-content: space-evenly;
-  grid-template-rows: repeat(4, 10%);
-  grid-template-columns: repeat(2, max-content 40%);
+  grid-template-rows: repeat(6, 10%);
+  grid-template-columns: repeat(2, max-content auto);
+
 }
+
 
 .one {
   grid-row: 1;
