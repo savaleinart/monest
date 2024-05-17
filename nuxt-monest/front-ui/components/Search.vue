@@ -66,7 +66,8 @@ function resetForm() {
 
   </div>
   <div class="card">
-    <DataTable :value="fiches" stripedRows paginator :rows="10" :rowsPerPageOptions="[10, 25, 50, 100]" size="small">
+    <DataTable :value="fiches" stripedRows paginator :rows="25" :rowsPerPageOptions="[10, 25, 50, 100]" size="small"
+      scrollable scrollHeight="40vmin" resizableColumns columnResizeMode="expand" showGridlines>
       <Column field="id" header="ID" sortable></Column>
       <Column field="attribution" header="Attribution" sortable></Column>
       <Column field="localite" header="Localité" sortable></Column>
@@ -74,7 +75,7 @@ function resetForm() {
       <Column field="descriptionA" header="Description avers" sortable></Column>
       <Column field="legendeR" header="Légende revers" sortable></Column>
       <Column field="descriptionR" header="Description revers" sortable></Column>
-      <Column field="ref" header="Réf. Ouvrage" sortable></Column>
+      <Column field="refOuvrage" header="Réf. Ouvrage" sortable></Column>
       <Column field="observation" header="Observation" sortable></Column>
 
     </DataTable>
@@ -108,7 +109,6 @@ label {
   grid-template-columns: repeat(2, max-content auto);
 
 }
-
 
 .one {
   grid-row: 1;
